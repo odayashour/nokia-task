@@ -1,10 +1,8 @@
 package com.nokia.task.controller;
 
 import java.util.List;
-
 import com.nokia.task.model.Person;
 import com.nokia.task.service.PersonService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

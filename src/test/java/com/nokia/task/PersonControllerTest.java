@@ -1,9 +1,11 @@
 package com.nokia.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,7 +40,61 @@ public class PersonControllerTest {
     private PersonService personService;
 
     @Test
-    public void addTest() throws Exception {
+    public void addTest()throws Exception{
+
+        PersonService personServ = new PersonService();
+        Person person = new Person("123","Person");
+
+        assertTrue(personServ.addPerson(person));   
+    }
+
+    @Test
+    public void addWithExistIdTest()throws Exception{
+
+        PersonService personServ = new PersonService();
+        Person person1 = new Person("111","Person1");
+        Person person2 = new Person("111","Person2");
+
+        personServ.addPerson(person1);
+        assertFalse(personServ.addPerson(person2));   
+    }
+
+    @Test
+    public void searchTest()throws Exception{
+
+        PersonService personServ = new PersonService();
+        Person person1 = new Person("111","Person1");
+        Person person2 = new Person("112","Person1");
+        Person person3 = new Person("113","Person2");
+
+        List<Person> pList = new ArrayList<Person>();
+        pList.add(person1);
+        pList.add(person2);
+
+        personServ.addPerson(person1);
+        personServ.addPerson(person2);
+        personServ.addPerson(person3);
+
+        assertEquals(pList, personServ.findByName("Person1"));
+    }
+
+    @Test
+    public void deleteTest()throws Exception{
+
+        PersonService personServ = new PersonService();
+        Person person1 = new Person("111","Person1");
+        Person person2 = new Person("112","Person1");
+        Person person3 = new Person("113","Person2");
+
+        personServ.addPerson(person1);
+        personServ.addPerson(person2);
+        personServ.addPerson(person3);
+
+        assertEquals(2, personServ.deleteByName("Person1"));
+    }
+
+    @Test
+    public void addIntTest() throws Exception {
 
         Mockito.when(personService.addPerson(Mockito.any(Person.class)))
         .thenReturn(true);
@@ -52,7 +108,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void findByNameTest() throws Exception {
+    public void SearchIntTest() throws Exception {
 
         String name = "oday";
 
@@ -64,13 +120,12 @@ public class PersonControllerTest {
             RequestBuilder requestBuilder =MockMvcRequestBuilders.get("/persons").param("name", name);
             MvcResult result= mockMvc.perform(requestBuilder).andReturn();
             ObjectMapper objectMapper = new ObjectMapper();
-            String expectedStr = objectMapper.writeValueAsString(tempPersons);
-            
+            String expectedStr = objectMapper.writeValueAsString(tempPersons);        
             JSONAssert.assertEquals(expectedStr, result.getResponse().getContentAsString(),false);
     }
 
     @Test
-    public void deleteTest() throws Exception {
+    public void deleteIntTest() throws Exception {
 
         Mockito.when(personService.deleteByName("person1"))
         .thenReturn(1);
@@ -83,7 +138,7 @@ public class PersonControllerTest {
     }
     
     @Test
-    public void getAllTest() throws Exception {
+    public void getAllIntTest() throws Exception {
 
         List<Person> tempPersons = Stream.of(new Person("111","p1"),
                                              new Person("112","p2"),
@@ -94,11 +149,7 @@ public class PersonControllerTest {
         RequestBuilder requestBuilder =MockMvcRequestBuilders.get("/persons/all");
         MvcResult result= mockMvc.perform(requestBuilder).andReturn();
         ObjectMapper objectMapper = new ObjectMapper();
-        String expectedStr = objectMapper.writeValueAsString(tempPersons);
-        
+        String expectedStr = objectMapper.writeValueAsString(tempPersons);      
         JSONAssert.assertEquals(expectedStr, result.getResponse().getContentAsString(),false);
     }
-
-   
-
 }
