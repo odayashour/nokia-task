@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PersonService {
 
-    private static List<Person> persons = new ArrayList<Person>();
+    private static List<Person> persons;
 
     public PersonService(){
         persons = new ArrayList<Person>();
@@ -32,7 +32,8 @@ public class PersonService {
         }
         return listPersons.size();       
     }
-    
+
+    /* TaskExceptionHandler class handle the thrown OutOfMemoryError */
     public synchronized boolean addPerson(String id,String name) throws OutOfMemoryError {
     
         boolean isExists= persons.stream()
