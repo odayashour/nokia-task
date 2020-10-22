@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+/* To handle OutOfMemory Exceptions thrown by Add Method */
 @ControllerAdvice
 public class TaskExceptionHandler {
     
