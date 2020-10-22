@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class TaskExceptionHandler {
     
     @ExceptionHandler(value = {OutOfMemoryError.class})
-    public ResponseEntity<Object> handleOutOfMemoryException(OutOfMemoryError e)
-    {
+    public ResponseEntity<Object> handleOutOfMemoryException(OutOfMemoryError e){
         return new ResponseEntity<>(false,HttpStatus.OK);
     }
 }
