@@ -11,6 +11,9 @@ public class PersonService {
 
     private static List<Person> persons = new ArrayList<Person>();
 
+    public PersonService(){
+        persons = new ArrayList<Person>();
+    }
     public List<Person> getAll(){
         return persons;
     }
@@ -20,28 +23,32 @@ public class PersonService {
                                .collect(Collectors.toList());
     }
 
-    public int deleteByName(String name){
+    public synchronized int deleteByName(String name){
 
         List<Person> listPersons = findByName(name);
 
         if (listPersons.size()>0){
             persons.removeAll(listPersons);
         }
-
         return listPersons.size();       
     }
-
-    public boolean addPerson(Person person){
-       
+    
+    public synchronized boolean addPerson(String id,String name) throws OutOfMemoryError {
+    
         boolean isExists= persons.stream()
-                                 .filter(p-> p.getId().equals(person.getId()))
-                                 .findFirst().isPresent();
-        
-        if (isExists == false){
-            persons.add(person);
-            return true;        
-        } else {
-            return false;
+                                 .filter(p-> p.getId().equals(id))
+                                 .findFirst().isPresent();                            
+        if (isExists == false){                  
+            int sizeOfId =  8 * (int) ((((id.length()) * 2) + 45) / 8);
+            int sizeOfName =  8 * (int) ((((name.length()) * 2) + 45) / 8);
+            int sizeofObject= sizeOfId + sizeOfName + 16 ;
+
+            if(Runtime.getRuntime().freeMemory() > sizeofObject){
+                Person person = new Person(id,name);     
+                persons.add(person);
+                return true;
+            }     
         }
+        return false;      
     }    
 }

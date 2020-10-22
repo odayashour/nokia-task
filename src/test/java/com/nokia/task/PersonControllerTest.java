@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,107 +38,100 @@ public class PersonControllerTest {
     @Test
     public void addTest()throws Exception{
 
-        PersonService personServ = new PersonService();
-        Person person = new Person("123","Person");
+        PersonService pService = new PersonService();
+        Random random = new Random();
+        String randomId = "P" + random.nextInt();
 
-        assertTrue(personServ.addPerson(person));   
+        assertTrue(pService.addPerson(randomId,"Person"));   
+        assertEquals(1, pService.getAll().size());
     }
 
     @Test
     public void addWithExistIdTest()throws Exception{
 
-        PersonService personServ = new PersonService();
-        Person person1 = new Person("111","Person1");
-        Person person2 = new Person("111","Person2");
+        PersonService pService = new PersonService();
+        Random random = new Random();
+        String randomId = "P" + random.nextInt();
 
-        personServ.addPerson(person1);
-        assertFalse(personServ.addPerson(person2));   
+        pService.addPerson(randomId,"Person1");
+        assertFalse(pService.addPerson(randomId,"Person2"));  
+        assertEquals(1, pService.getAll().size()); 
     }
 
     @Test
     public void searchTest()throws Exception{
 
-        PersonService personServ = new PersonService();
-        Person person1 = new Person("111","Person1");
-        Person person2 = new Person("112","Person1");
-        Person person3 = new Person("113","Person2");
-
-        List<Person> pList = new ArrayList<Person>();
-        pList.add(person1);
-        pList.add(person2);
-
-        personServ.addPerson(person1);
-        personServ.addPerson(person2);
-        personServ.addPerson(person3);
-
-        assertEquals(pList, personServ.findByName("Person1"));
+        PersonService pService = new PersonService();
+        Random random = new Random();
+       
+        pService.addPerson("P" + random.nextInt(),"Person1");
+        pService.addPerson("P" + random.nextInt(),"Person1");
+        pService.addPerson("P" + random.nextInt(),"Person2");
+        assertEquals(2, pService.findByName("Person1").size());
     }
 
     @Test
     public void deleteTest()throws Exception{
 
-        PersonService personServ = new PersonService();
-        Person person1 = new Person("111","Person1");
-        Person person2 = new Person("112","Person1");
-        Person person3 = new Person("113","Person2");
-
-        personServ.addPerson(person1);
-        personServ.addPerson(person2);
-        personServ.addPerson(person3);
-
-        assertEquals(2, personServ.deleteByName("Person1"));
+        PersonService pService = new PersonService();
+        Random random = new Random();
+       
+        pService.addPerson("P" + random.nextInt(),"Person1");
+        pService.addPerson("P" + random.nextInt(),"Person1");
+        pService.addPerson("P" + random.nextInt(),"Person2");
+        assertEquals(2, pService.deleteByName("Person1"));
+        assertEquals(1, pService.getAll().size());
     }
 
     @Test
     public void addIntTest() throws Exception {
-
-        Mockito.when(personService.addPerson(Mockito.any(Person.class)))
-        .thenReturn(true);
-
+       
+        Mockito.when(personService.addPerson("111","Person"))
+                .thenReturn(true);
         RequestBuilder requestBuilder =MockMvcRequestBuilders.post("/persons")
                                                             .param("id", "111")
-                                                            .param("name","person1");
+                                                            .param("name","Person");
         MvcResult result= mockMvc.perform(requestBuilder).andReturn();
-
         assertTrue(Boolean.parseBoolean(result.getResponse().getContentAsString()));
     }
 
     @Test
     public void SearchIntTest() throws Exception {
 
-        String name = "oday";
-        List<Person> tempPersons = Stream.of(new Person("111","oday"),
-                                             new Person("112","oday")).collect(Collectors.toList());
+        String name = "Person";
+        Random random = new Random();
+        List<Person> tempPersons = Stream.of(new Person("P" + random.nextInt(),name),
+                                             new Person("P" + random.nextInt(),name)).collect(Collectors.toList());
 
         when(personService.findByName(name)).thenReturn(tempPersons);
 
-            RequestBuilder requestBuilder =MockMvcRequestBuilders.get("/persons").param("name", name);
-            MvcResult result= mockMvc.perform(requestBuilder).andReturn();
-            ObjectMapper objectMapper = new ObjectMapper();
-            String expectedStr = objectMapper.writeValueAsString(tempPersons);  
-
-            JSONAssert.assertEquals(expectedStr, result.getResponse().getContentAsString(),false);
+        RequestBuilder requestBuilder =MockMvcRequestBuilders.get("/persons").param("name", name);
+        MvcResult result= mockMvc.perform(requestBuilder).andReturn();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String expectedStr = objectMapper.writeValueAsString(tempPersons);  
+        JSONAssert.assertEquals(expectedStr, result.getResponse().getContentAsString(),false);
     }
 
     @Test
     public void deleteIntTest() throws Exception {
-
-        Mockito.when(personService.deleteByName("person1"))
+      
+        String name = "Person";
+        Mockito.when(personService.deleteByName(name))
         .thenReturn(1);
 
         RequestBuilder requestBuilder =MockMvcRequestBuilders.delete("/persons")
-                                                            .param("name","person1");
+                                                            .param("name",name);
         MvcResult result= mockMvc.perform(requestBuilder).andReturn();
-
         assertEquals(1, Integer.parseInt(result.getResponse().getContentAsString()));
     }
     
     @Test
     public void getAllIntTest() throws Exception {
-
-        List<Person> tempPersons = Stream.of(new Person("111","p1"),
-                                             new Person("112","p2"),
-                                             new Person("113","p3")).collect(Collectors.toList());
+    
+        Random random = new Random();
+        List<Person> tempPersons = Stream.of(new Person("P" + random.nextInt(),"Person1"),
+                                             new Person("P" + random.nextInt(),"Person2"),
+                                             new Person("P" + random.nextInt(),"Person3")).collect(Collectors.toList());
 
         when(personService.getAll()).thenReturn(tempPersons);
 
@@ -146,7 +139,6 @@ public class PersonControllerTest {
         MvcResult result= mockMvc.perform(requestBuilder).andReturn();
         ObjectMapper objectMapper = new ObjectMapper();
         String expectedStr = objectMapper.writeValueAsString(tempPersons);      
-        
         JSONAssert.assertEquals(expectedStr, result.getResponse().getContentAsString(),false);
     }
 }
