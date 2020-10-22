@@ -16,15 +16,15 @@ public class PersonService {
     }
 
     public List<Person> findByName(String name){
-        return persons.stream().filter(p-> p.getName().equals(name)).collect(Collectors.toList());
+        return persons.stream().filter(p-> p.getName().equals(name))
+                               .collect(Collectors.toList());
     }
 
     public int deleteByName(String name){
 
         List<Person> listPersons = findByName(name);
 
-        if(listPersons.size()>0)
-        {
+        if (listPersons.size()>0){
             persons.removeAll(listPersons);
         }
 
@@ -34,16 +34,13 @@ public class PersonService {
     public boolean addPerson(Person person){
        
         boolean isExists= persons.stream()
-                                .filter(p-> p.getId()
-                                .equals(person.getId()))
-                                .findFirst().isPresent();
+                                 .filter(p-> p.getId().equals(person.getId()))
+                                 .findFirst().isPresent();
         
-        if(isExists == false){
-
+        if (isExists == false){
             persons.add(person);
             return true;        
-        }else{
-
+        } else {
             return false;
         }
     }    

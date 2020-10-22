@@ -2,8 +2,7 @@ package com.nokia.task.model;
 
 
 public class Person {
-
-    
+ 
     private String id;
     private String name;
 
@@ -32,9 +31,7 @@ public class Person {
     }
 
     @Override
-    public String toString() {
-        
+    public String toString() {      
         return "Person [id=" + id + ", name =" + name + "]";
     }
-
 }

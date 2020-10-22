@@ -4,17 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nokia.task.controller.PersonController;
 import com.nokia.task.model.Person;
 import com.nokia.task.service.PersonService;
-
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -31,7 +28,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = PersonController.class)
 public class PersonControllerTest {
-
 
     @Autowired
     private MockMvc mockMvc;
@@ -102,8 +98,8 @@ public class PersonControllerTest {
         RequestBuilder requestBuilder =MockMvcRequestBuilders.post("/persons")
                                                             .param("id", "111")
                                                             .param("name","person1");
-
         MvcResult result= mockMvc.perform(requestBuilder).andReturn();
+
         assertTrue(Boolean.parseBoolean(result.getResponse().getContentAsString()));
     }
 
@@ -111,7 +107,6 @@ public class PersonControllerTest {
     public void SearchIntTest() throws Exception {
 
         String name = "oday";
-
         List<Person> tempPersons = Stream.of(new Person("111","oday"),
                                              new Person("112","oday")).collect(Collectors.toList());
 
@@ -120,7 +115,8 @@ public class PersonControllerTest {
             RequestBuilder requestBuilder =MockMvcRequestBuilders.get("/persons").param("name", name);
             MvcResult result= mockMvc.perform(requestBuilder).andReturn();
             ObjectMapper objectMapper = new ObjectMapper();
-            String expectedStr = objectMapper.writeValueAsString(tempPersons);        
+            String expectedStr = objectMapper.writeValueAsString(tempPersons);  
+
             JSONAssert.assertEquals(expectedStr, result.getResponse().getContentAsString(),false);
     }
 
@@ -132,8 +128,8 @@ public class PersonControllerTest {
 
         RequestBuilder requestBuilder =MockMvcRequestBuilders.delete("/persons")
                                                             .param("name","person1");
-
         MvcResult result= mockMvc.perform(requestBuilder).andReturn();
+
         assertEquals(1, Integer.parseInt(result.getResponse().getContentAsString()));
     }
     
@@ -150,6 +146,7 @@ public class PersonControllerTest {
         MvcResult result= mockMvc.perform(requestBuilder).andReturn();
         ObjectMapper objectMapper = new ObjectMapper();
         String expectedStr = objectMapper.writeValueAsString(tempPersons);      
+        
         JSONAssert.assertEquals(expectedStr, result.getResponse().getContentAsString(),false);
     }
 }

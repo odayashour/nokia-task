@@ -21,34 +21,29 @@ public class PersonController {
 
     @GetMapping
     public List<Person> search(@RequestParam String name){
-
         return personService.findByName(name);     
     }   
 
     @DeleteMapping
     public int delete(@RequestParam String name){
-
        return personService.deleteByName(name);
     }
 
     @PostMapping
-    public  boolean add(@RequestParam String id, @RequestParam String name) throws OutOfMemoryError{
-       
+    public  boolean add(@RequestParam String id, @RequestParam String name) throws OutOfMemoryError{     
+     
         Person person = new Person(id,name);
+
         return personService.addPerson(person);
     }
 
     @GetMapping("/all")
     public List<Person> getAll(){
-
         return personService.getAll();     
     }
 
     @PostMapping("/frombody")
     public  boolean addFromBody(@RequestBody Person person) throws OutOfMemoryError{
-       
         return personService.addPerson(person);
-
     }
-     
 }
