@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/persons")
 public class PersonController {
@@ -24,14 +23,14 @@ public class PersonController {
         return personService.findByName(name);     
     }   
 
-    @DeleteMapping
-    public int delete(@RequestParam String name){
-       return personService.deleteByName(name);
-    }
-
     @PostMapping
     public boolean add(@RequestParam String id, @RequestParam String name){                
         return personService.addPerson(id,name);
+    }
+
+    @DeleteMapping
+    public int delete(@RequestParam String name){
+       return personService.deleteByName(name);
     }
 
     @GetMapping("/all")

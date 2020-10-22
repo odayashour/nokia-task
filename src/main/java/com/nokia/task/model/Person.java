@@ -1,6 +1,5 @@
 package com.nokia.task.model;
 
-
 public class Person {
  
     private String id;
