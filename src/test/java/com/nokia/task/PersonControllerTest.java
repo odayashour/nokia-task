@@ -1,7 +1,6 @@
 package com.nokia.task;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import java.util.List;
@@ -34,54 +33,6 @@ public class PersonControllerTest {
 
     @MockBean
     private PersonService personService;
-
-    @Test
-    public void addTest()throws Exception{
-
-        PersonService pService = new PersonService();
-        Random random = new Random();
-        String randomId = "P" + random.nextInt();
-
-        assertTrue(pService.addPerson(randomId,"Person"));   
-        assertEquals(1, pService.getAll().size());
-    }
-
-    @Test
-    public void addWithExistIdTest()throws Exception{
-
-        PersonService pService = new PersonService();
-        Random random = new Random();
-        String randomId = "P" + random.nextInt();
-
-        pService.addPerson(randomId,"Person1");
-        assertFalse(pService.addPerson(randomId,"Person2"));  
-        assertEquals(1, pService.getAll().size()); 
-    }
-
-    @Test
-    public void searchTest()throws Exception{
-
-        PersonService pService = new PersonService();
-        Random random = new Random();
-       
-        pService.addPerson("P" + random.nextInt(),"Person1");
-        pService.addPerson("P" + random.nextInt(),"Person1");
-        pService.addPerson("P" + random.nextInt(),"Person2");
-        assertEquals(2, pService.findByName("Person1").size());
-    }
-
-    @Test
-    public void deleteTest()throws Exception{
-
-        PersonService pService = new PersonService();
-        Random random = new Random();
-       
-        pService.addPerson("P" + random.nextInt(),"Person1");
-        pService.addPerson("P" + random.nextInt(),"Person1");
-        pService.addPerson("P" + random.nextInt(),"Person2");
-        assertEquals(2, pService.deleteByName("Person1"));
-        assertEquals(1, pService.getAll().size());
-    }
 
     @Test
     public void addIntTest() throws Exception {
