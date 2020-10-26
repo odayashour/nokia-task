@@ -108,7 +108,6 @@ public class PersonServiceTest {
     @Test
     public void concurencyTest() throws Exception {
 
-
         ExecutorService executorService = Executors.newFixedThreadPool(3);
 
         executorService.execute(()->{
@@ -134,5 +133,30 @@ public class PersonServiceTest {
         Future<List<Person>> future = executorService.submit(taskRead);
         List<Person> persons = future.get();
         assertEquals(3, persons.size());
+    }
+
+    @Test
+    public void concurencyAddSearchTest() throws Exception {
+
+        Thread thread1 = new Thread(() -> {   
+            for (int i = 0; i < 100; i++) {
+                personService.addPerson("p" + i, "name" + i);
+            }
+        });
+
+        thread1.start();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();      
+        Callable<List<Person>> taskRead = () -> {
+            List<Person> persons = new ArrayList<Person>();
+            for (int i = 0; i < 100; i++) {
+                persons.addAll(personService.findByName("name" + i));
+            }
+             return persons;
+         };
+
+        Future<List<Person>> future = executorService.submit(taskRead);
+        List<Person> personList = future.get();
+
+        assertEquals(100, personList.size());
     }
 }
