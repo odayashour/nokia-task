@@ -22,12 +22,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class PersonServicesTest {
 
-	@Test
-	void contextLoads() {
-	}
 	private PersonService personService = new PersonService();
     private Random random = new Random();
-
+    
+    @Test
+	void contextLoads() {
+    }
+    
     @Test
     public void addTest() throws Exception {
 
@@ -85,9 +86,8 @@ class PersonServicesTest {
 
     @Test
     public void concurencyAddTest() throws Exception {
+    
         Thread thread1 = new Thread(() -> {
-        
-
             for (int i = 0; i < 100; i++) {
                 personService.addPerson("p" + i, "name" + i);
             }
@@ -104,6 +104,45 @@ class PersonServicesTest {
         thread2.join();
 
         assertEquals(100, personService.getAll().size());
+    }
+
+    @Test
+    public void concurencyMultiAddTest() throws Exception {
+       
+        List<Thread> threads = new ArrayList<>();
+        for (int i=0; i< 1000; i++) {
+           
+            Thread thread1 = new Thread(() -> {
+               
+
+                for (int ii = 0; ii < 1000; ii++) {
+                    personService.addPerson("p" + ii, "name" + ii);
+                    personService.getAll();
+                }
+            });
+           
+            threads.add(thread1);
+            Thread thread2 = new Thread(() -> {
+                for (int ii = 0; ii < 1000; ii++) {
+
+                    personService.findByName("name"+ii);
+                    personService.deleteByName("name"+ii);
+
+                }
+            });
+            threads.add(thread2);
+        }
+       
+        for (Thread thread : threads) {
+           
+            thread.start();
+        }
+       
+        for (Thread thread : threads) {
+           
+            thread.join();
+        }
+        assertEquals(0,personService.getAll().size());
     }
 
     @Test
