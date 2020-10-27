@@ -71,4 +71,8 @@ public class PersonService {
             writeLock.unlock();
         }
     }    
+
+    public void removeAll(){
+        persons.clear();
+    }
 }

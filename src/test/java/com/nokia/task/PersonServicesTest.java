@@ -115,7 +115,7 @@ class PersonServicesTest {
             Thread thread1 = new Thread(() -> {
                
 
-                for (int ii = 0; ii < 1000; ii++) {
+                for (int ii = 0; ii < 100; ii++) {
                     personService.addPerson("p" + ii, "name" + ii);
                     personService.getAll();
                 }
@@ -123,7 +123,7 @@ class PersonServicesTest {
            
             threads.add(thread1);
             Thread thread2 = new Thread(() -> {
-                for (int ii = 0; ii < 1000; ii++) {
+                for (int ii = 0; ii < 100; ii++) {
 
                     personService.findByName("name"+ii);
                     personService.deleteByName("name"+ii);
@@ -199,4 +199,6 @@ class PersonServicesTest {
 
         assertEquals(100, personList.size());
     }
+
+    
 }
