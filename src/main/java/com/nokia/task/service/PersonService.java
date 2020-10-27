@@ -1,18 +1,20 @@
 package com.nokia.task.service;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import com.nokia.task.model.Person;
+
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PersonService {
 
     private static List<Person> persons;
-
     private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private final Lock readLock = rwl.readLock();
     private final Lock writeLock = rwl.writeLock();
@@ -71,4 +73,6 @@ public class PersonService {
             writeLock.unlock();
         }
     }    
+
+ 
 }

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -13,18 +12,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.IntStream;
 
 import com.nokia.task.model.Person;
 import com.nokia.task.service.PersonService;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class PersonServiceTest {
+class PersonServicesTest {
 
-    private PersonService personService = new PersonService();
+	@Test
+	void contextLoads() {
+	}
+	private PersonService personService = new PersonService();
     private Random random = new Random();
 
     @Test
